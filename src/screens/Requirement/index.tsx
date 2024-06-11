@@ -36,7 +36,6 @@ export const Requirement = () => {
   const { data: registrosInternos } = useFetch(url1, {}, true, protocolApi);
   //const { data: registrosExternos } = useFetch(url2, {}, true, protocolApi);
 
-  console.log("data", registrosInternos);
   //console.log("data", registrosExternos);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;

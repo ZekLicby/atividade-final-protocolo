@@ -47,11 +47,13 @@ export const RedefinePassword = () => {
 
         <InputGroup>
           <Input
-            holder={"Digite sua senha"}
+          type="text"
+            placeholder="Digite sua senha"
             icon={<GoKey size={20} color="#000000" />}
           />
           <Input
-            holder={"Digite sua senha novamente"}
+          type="text"
+            placeholder="Digite sua senha novamente"
             icon={<GoKey size={20} color="#000000" />}
           />
         </InputGroup>
