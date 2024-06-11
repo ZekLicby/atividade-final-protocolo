@@ -25,7 +25,7 @@ import {
   ConfirmationMesssager,
   ConfirmationText,
 } from "./styles";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavBar from "../../components/navBar";
 import Header from "../../components/header";
 import { Touch } from "../../styles/globalStyles";
@@ -33,6 +33,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { registerEmployee } from "services/API/protocol/employee";
 import { useFetch } from "hooks/useFetch";
 import { protocolApi } from "services/API";
+import jwt from "jsonwebtoken";
 
 export const MyProfile = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -89,8 +90,34 @@ export const MyProfile = () => {
     passwordHash: password,
   };
 
-  const url = "/employee";
-  const { data, isLoading } = useFetch(url, {}, true, protocolApi);
+  const token = localStorage.getItem("token");
+  const userId = jwt?.decode(token)?.sub;
+
+  const url = `/employee/${userId}`;
+  const { data, isLoading } = useFetch(url, {}, !!userId, protocolApi);
+
+  const userProfile = data;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+
+    if (year && month && day) {
+      return `${day}/${month}/${year}`;
+    }
+
+    return "";
+  };
+
+  const handleRegisterEmployee = () => {
+    try {
+      registerEmployee(body);
+    } catch (error) {
+      console.log("ERROR", error);
+    } finally {
+      setIsRegister(false);
+    }
+  };
 
   return isRegister ? (
     <Container>
@@ -178,7 +205,7 @@ export const MyProfile = () => {
             <FormButton color="#690013">
               <FormButtonText
                 onClick={() => {
-                  registerEmployee(body);
+                  handleRegisterEmployee();
                 }}
               >
                 Cadastrar
@@ -210,29 +237,29 @@ export const MyProfile = () => {
             <InfoGroup>
               <Infos>
                 <InfoTitle>Nome</InfoTitle>
-                <InfoText>Charly</InfoText>
+                <InfoText>{data?.name}</InfoText>
               </Infos>
               <Infos>
                 <InfoTitle>N de matricula</InfoTitle>
-                <InfoText>0000000000000</InfoText>
+                <InfoText>{data?.registrationNumber}</InfoText>
               </Infos>
               <Infos>
                 <InfoTitle>Email</InfoTitle>
-                <InfoText>charly@unicap.com</InfoText>
+                <InfoText>{data?.email}</InfoText>
               </Infos>
             </InfoGroup>
             <InfoGroup>
               <Infos>
                 <InfoTitle>Cargo</InfoTitle>
-                <InfoText>Gerente</InfoText>
+                <InfoText>{data?.role}</InfoText>
               </Infos>
               <Infos>
                 <InfoTitle>Setor</InfoTitle>
-                <InfoText>Protocolo</InfoText>
+                <InfoText>{data?.departament}</InfoText>
               </Infos>
               <Infos>
                 <InfoTitle>Data de nascimento</InfoTitle>
-                <InfoText>20/02/1994</InfoText>
+                <InfoText>{formatDate(data?.birthdate)}</InfoText>
               </Infos>
             </InfoGroup>
           </Info>

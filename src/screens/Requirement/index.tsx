@@ -30,53 +30,41 @@ import { useFetch } from "../../hooks/useFetch";
 import { protocolApi } from "../../services/API";
 
 export const Requirement = () => {
-  const [requirements, setRequirements] = useState([
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-  ]);
+  const url1 = "/internalRegister";
+  //const url2 = "/externalRegister";
+
+  const { data: registrosInternos } = useFetch(url1, {}, true, protocolApi);
+  //const { data: registrosExternos } = useFetch(url2, {}, true, protocolApi);
+
+  console.log("data", registrosInternos);
+  //console.log("data", registrosExternos);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = requirements.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = registrosInternos?.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRequirement, setSelectedRequirement] = useState();
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const selectRequirement = (index) => {
-    setSelectedRequirement(requirements[index]);
+    setSelectedRequirement(registrosInternos[index]);
     setIsOpen(true);
   };
 
-  const url1 = "/registroPrimario";
-  const url2 = "/registroSecundario";
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = date.getUTCFullYear();
 
-  const { data: registrosInternos } = useFetch(url1, {}, true, protocolApi);
-  const { data: registrosExternos } = useFetch(url2, {}, true, protocolApi);
-
-  console.log("data", registrosInternos);
-  console.log("data", registrosExternos);
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <Container>
@@ -88,16 +76,16 @@ export const Requirement = () => {
             <FormsArea>
               <InputArea>
                 <InputTitle>Requerente</InputTitle>
-                <FormInput width={"620px"} />
+                <FormInput value={"Carlos"} width={"620px"} />
               </InputArea>
               <InputGroup gap={"75px"}>
                 <InputArea>
                   <InputTitle>RA</InputTitle>
-                  <FormInput />
+                  <FormInput value={selectedRequirement?.RA} />
                 </InputArea>
                 <InputArea>
                   <InputTitle>Curso</InputTitle>
-                  <FormInput />
+                  <FormInput value={selectedRequirement?.course} />
                 </InputArea>
                 <InputArea>
                   <InputTitle>Tipo de entrada</InputTitle>
@@ -106,11 +94,14 @@ export const Requirement = () => {
               </InputGroup>
               <InputArea>
                 <InputTitle>Assunto</InputTitle>
-                <FormInput />
+                <FormInput value={selectedRequirement?.subject} />
               </InputArea>
               <InputArea>
                 <InputTitle>Resumo Final</InputTitle>
-                <FormInput width={"620px"} /* height={'200px'} */ />
+                <FormInput
+                  value={selectedRequirement?.finalSummary}
+                  width={"620px"} /* height={'200px'} */
+                />
               </InputArea>
               <AreaTitle>
                 <PageTitle>Histórico de transmição</PageTitle>
@@ -156,9 +147,9 @@ export const Requirement = () => {
               <PageTitle>Requerimentos</PageTitle>
             </AreaTitle>
             <RequirementContent>
-              {currentItems.map((item, index) => (
+              {registrosInternos?.map((item, index) => (
                 <RequirementArea
-                  key={index}
+                  key={item.id}
                   onClick={() => selectRequirement(index)}
                 >
                   <Number>Requerimento {index + indexOfFirstItem + 1}</Number>
@@ -168,7 +159,7 @@ export const Requirement = () => {
             </RequirementContent>
             <Pagination>
               {Array.from(
-                { length: Math.ceil(requirements.length / itemsPerPage) },
+                { length: Math.ceil(registrosInternos?.length / itemsPerPage) },
                 (_, i) => (
                   <PageNumber key={i} onClick={() => paginate(i + 1)}>
                     {i + 1}
