@@ -40,7 +40,7 @@ export const Home = () => {
 
   return (
     <Container>
-      <Content img={"background.png"}>
+      <Content img="background.png">
         <LogoArea>
           <Logo src="logo-responsivo.png" />
         </LogoArea>
