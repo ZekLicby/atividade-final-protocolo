@@ -8,7 +8,7 @@ export const Content = styled.div`
   background-color: white;
   align-items: flex-start;
   flex-direction: column;
-  background-image: url(${(props) => props.img});
+  background-image: url("background.png");
   background-size: cover;
 `;
 

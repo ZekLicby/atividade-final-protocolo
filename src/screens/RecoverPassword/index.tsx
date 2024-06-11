@@ -56,11 +56,11 @@ export const RecoverPassword = () => {
         </TitleArea>
 
         <Input
-          holder={"Digite seu email"}
+          placeholder={"Digite seu email"}
           icon={<GoMail size={20} color="#000000" />}
         />
 
-        <Button title={"Redefinir senha"} press={() => setIsSent(!isSent)} />
+        <Button title={"Redefinir senha"} onClick={() => setIsSent(!isSent)} />
       </LoginBox>
     </ContainerLogin>
   );
