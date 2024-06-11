@@ -7,7 +7,7 @@ import {
   BoxTitle,
   Cancel,
   BoxText,
-} from "../../globalStyles";
+} from "../../styles/globalStyles";
 import { InputGroup, TitleArea } from "./styles";
 import React, { useState } from "react";
 import { GoKey } from "react-icons/go";

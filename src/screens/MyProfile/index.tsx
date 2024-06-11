@@ -28,12 +28,76 @@ import {
 import React, { useState } from "react";
 import NavBar from "../../components/navBar";
 import Header from "../../components/header";
-import { Touch } from "../../globalStyles";
+import { Touch } from "../../styles/globalStyles";
 import { GoArrowLeft } from "react-icons/go";
+import { registerEmployee } from "services/API/protocol/employee";
 
 export const MyProfile = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [confirm, setConfirm] = useState(false);
+
+  /* {
+   "name": "Carlos Lins",
+   "role": "Funcionário protocolo",
+   "email": "carloslins@gmail.com",
+   "departament": "Protocolo",
+   "birthdate": "2002-12-22T12:00:00",
+   "registrationNumber": "77777",
+   "passwordHash": "123"
+} */
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [departament, setDepartament] = useState("");
+  const [displayValue, setDisplayValue] = useState("");
+
+  const handleInputChange = (e) => {
+    let inputValue = e.target.value.replace(/\D/g, "");
+
+    if (inputValue.length > 8) {
+      inputValue = inputValue.slice(0, 8);
+    }
+
+    let maskedValue = inputValue;
+    if (inputValue.length >= 5) {
+      maskedValue = `${inputValue.slice(0, 2)}/${inputValue.slice(
+        2,
+        4
+      )}/${inputValue.slice(4, 8)}`;
+    } else if (inputValue.length >= 3) {
+      maskedValue = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
+    } else if (inputValue.length >= 1) {
+      maskedValue = `${inputValue.slice(0, 2)}`;
+    }
+
+    setDisplayValue(maskedValue);
+
+    if (inputValue.length === 8) {
+      const day = inputValue.slice(0, 2);
+      const month = inputValue.slice(2, 4);
+      const year = inputValue.slice(4, 8);
+      const isoFormattedDate = `${year}-${month}-${day}T12:00:00`;
+      setBirthdate(isoFormattedDate);
+    } else {
+      setBirthdate("");
+    }
+  };
+
+  const body = {
+    name,
+    role,
+    email,
+    departament,
+    birthdate,
+    registrationNumber,
+    passwordHash: password,
+  };
+
+  console.log(birthdate);
 
   return isRegister ? (
     <Container>
@@ -48,31 +112,64 @@ export const MyProfile = () => {
           <Inputs>
             <InputGroup>
               <InputTitle>Nome completo</InputTitle>
-              <Input width={"900px"}></Input>
+              <Input
+                width={"900px"}
+                onChange={({ target }) => setName(target.value)}
+              />
             </InputGroup>
-            <InputGroup>
-              <InputTitle>Email</InputTitle>
-              <Input width={"900px"}></Input>
-            </InputGroup>
+            <Splited>
+              <InputGroup>
+                <InputTitle>Email</InputTitle>
+                <Input
+                  width={"400px"}
+                  onChange={({ target }) => setEmail(target.value)}
+                />
+              </InputGroup>
+              <InputGroup>
+                <InputTitle>Senha</InputTitle>
+                <Input
+                  width={"300px"}
+                  type="password"
+                  onChange={({ target }) => setPassword(target.value)}
+                />
+              </InputGroup>
+            </Splited>
             <Splited>
               <Inputs>
                 <InputGroup>
                   <InputTitle>Cargo</InputTitle>
-                  <Input width={"400px"}></Input>
+                  <Input
+                    width={"400px"}
+                    onChange={({ target }) => setRole(target.value)}
+                  />
                 </InputGroup>
                 <InputGroup>
                   <InputTitle>Data de nascimento</InputTitle>
-                  <Input width={"300px"}></Input>
+                  <Input
+                    width={"300px"}
+                    value={displayValue}
+                    type="text"
+                    maxLength={10}
+                    onChange={(value) => handleInputChange(value)}
+                  />
                 </InputGroup>
               </Inputs>
               <Inputs>
                 <InputGroup>
                   <InputTitle>N de matrícula</InputTitle>
-                  <Input width={"300px"}></Input>
+                  <Input
+                    width={"300px"}
+                    onChange={({ target }) =>
+                      setRegistrationNumber(target.value)
+                    }
+                  />
                 </InputGroup>
                 <InputGroup>
                   <InputTitle>Setor</InputTitle>
-                  <Input width={"300px"}></Input>
+                  <Input
+                    width={"300px"}
+                    onChange={({ target }) => setDepartament(target.value)}
+                  />
                 </InputGroup>
               </Inputs>
             </Splited>
@@ -86,7 +183,11 @@ export const MyProfile = () => {
           ) : null}
           <ButtonGroup>
             <FormButton color="#690013">
-              <FormButtonText onClick={() => setConfirm(!confirm)}>
+              <FormButtonText
+                onClick={() => {
+                  registerEmployee(body);
+                }}
+              >
                 Cadastrar
               </FormButtonText>
             </FormButton>

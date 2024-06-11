@@ -1,5 +1,5 @@
 "use client";
-import { Container, Content } from "../../globalStyles";
+import { Container, Content } from "../../styles/globalStyles";
 import React, { useState } from "react";
 import {
   Area,
@@ -24,7 +24,7 @@ import {
   FormButton,
   FormButtonText,
 } from "../Register/style";
-import { BackButtonArea, Touch } from "../../globalStyles";
+import { BackButtonArea, Touch } from "../../styles/globalStyles";
 import { GoArrowLeft } from "react-icons/go";
 import { useFetch } from "../../hooks/useFetch";
 import { protocolApi } from "../../services/API";

@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { theme } from "../../theme";
+import { theme } from "../../styles/themes";
 
 const { default: styled } = require("styled-components");
 
 export const TitleArea = styled.div`
-    width: 370px;
-    display: flex;
-    flex-direction: column;
-    gap: ${props => props.gap};
-    margin-bottom: 60px;
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.gap};
+  margin-bottom: 60px;
 `;

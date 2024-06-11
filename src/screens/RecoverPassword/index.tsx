@@ -9,7 +9,7 @@ import {
   BoxTitle,
   BoxText,
   Cancel,
-} from "../../globalStyles";
+} from "../../styles/globalStyles";
 import { TitleArea, Content } from "./styles";
 import Menssager from "../../components/menssager";
 import { GoMail } from "react-icons/go";

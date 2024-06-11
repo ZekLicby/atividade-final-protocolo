@@ -7,17 +7,14 @@ import {
   BoxText,
   LogoArea,
   Logo,
-} from "../../globalStyles";
+} from "../../styles/globalStyles";
 import { InputGroup, ForgotPassword, TitleArea } from "./styles";
 import { Input } from "../../components/CustomInput";
 import { Button } from "../../components/CustomButton";
 import { GoPerson } from "react-icons/go";
 import { GoLock } from "react-icons/go";
 import Link from "next/link";
-import {
-  getEmployee,
-  handleLogin,
-} from "../../services/API/protocol/funcionario";
+import { handleLogin } from "../../services/API/protocol/employee";
 import { useFetch } from "../../hooks/useFetch";
 import { protocolApi } from "../../services/API";
 
@@ -34,11 +31,15 @@ export const Login = () => {
     );
   };
 
-  const url = "/funcionario";
+  const url = "/employee";
 
-  const { data } = useFetch(url, {}, condition, protocolApi);
+  const { data, isLoading } = useFetch(url, {}, condition, protocolApi);
 
   console.log("data", data);
+
+  useEffect(() => {
+    setX(isLoading);
+  }, [isLoading]);
 
   return (
     <ContainerLogin>

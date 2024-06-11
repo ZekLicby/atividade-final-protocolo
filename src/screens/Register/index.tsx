@@ -1,7 +1,12 @@
 "use client";
 import Header from "../../components/header";
 import NavBar from "../../components/navBar";
-import { Container, Content, BackButtonArea, Touch } from "../../globalStyles";
+import {
+  Container,
+  Content,
+  BackButtonArea,
+  Touch,
+} from "../../styles/globalStyles";
 import {
   Area,
   AreaTitle,
@@ -89,10 +94,6 @@ export const Register = () => {
                 </InputArea>
               </InputGroup>
               <InputGroup>
-                <InputArea>
-                  <InputTitle>Endereço completo</InputTitle>
-                  <FormInput />
-                </InputArea>
                 <InputArea>
                   <InputTitle>Curso</InputTitle>
                   <FormInput />

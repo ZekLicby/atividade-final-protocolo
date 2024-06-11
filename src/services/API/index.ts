@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getRefreshToken } from "./protocol/funcionario";
+import { getRefreshToken } from "./protocol/employee";
 
-const protocolUrl = "https://setordeprotocolosapi-zq2jbuqm.b4a.run";
+const protocolUrl = "https://setordeprotocolos-ppcngf23.b4a.run";
 
 export const protocolApi = axios.create({
   baseURL: protocolUrl,
