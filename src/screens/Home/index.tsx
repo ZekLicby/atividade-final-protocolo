@@ -7,7 +7,6 @@ import {
   Logo,
   LogoArea,
   Title,
-  VideoArea,
   ButtonArea,
   Button,
   ButtonTitle,
@@ -15,17 +14,29 @@ import {
 import { GoPencil, GoPerson } from "react-icons/go";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import { Container } from "@/styles/globalStyles";
+import jwt from "jsonwebtoken";
+import { useFetch } from "hooks/useFetch";
+import { protocolApi } from "services/API";
 
 export const Home = () => {
   const router = useRouter();
+
   const [isLoged, setIsLoged] = useState(true);
   const [user, setUser] = useState("user2");
 
+  const token = localStorage.getItem("token");
+  const userId = jwt?.decode(token)?.sub;
+
+  console.log("token:", userId);
+
+  const url = `/employee?id=${userId}`;
+  const { data, isLoading } = useFetch(url, {}, !!userId, protocolApi);
+
   useEffect(() => {
-    if (!isLoged) {
+    if ((!isLoading && !data) || data?.status === 401) {
       router.push("/login");
     }
-  }, []);
+  }, [data]);
 
   return (
     <Container>
@@ -41,7 +52,6 @@ export const Home = () => {
             <br />
             de protocolos da Unicap!!
           </Title>
-          <VideoArea />
         </HeadlineArea>
         <ButtonArea>
           {user === "user1" ? (

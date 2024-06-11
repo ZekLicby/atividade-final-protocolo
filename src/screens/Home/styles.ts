@@ -34,12 +34,6 @@ export const Title = styled.h1`
   color: ${theme.background};
 `;
 
-export const VideoArea = styled.div`
-  width: 500px;
-  height: 300px;
-  border: 1px solid black;
-`;
-
 export const ButtonArea = styled.div`
   width: 100%;
   display: flex;

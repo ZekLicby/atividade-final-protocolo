@@ -33,10 +33,118 @@ import {
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useRouter } from "next/navigation";
+import { postInternalRegister } from "services/API/protocol/intervalRegister";
 
 export const Register = () => {
   const route = useRouter();
+
+  const userToken = localStorage.getItem("token");
+
   const [token, setToken] = useState("register");
+
+  const [ra, setRa] = useState("");
+  const [course, setCourse] = useState("");
+  const [phone, setPhone] = useState("");
+  const [subject, setSubject] = useState("");
+  const [finalSummary, setFinalSummary] = useState("");
+  const [organ, setOrgan] = useState("");
+  const [forwardedDate, setForwardedDate] = useState("");
+  const [notes, setNotes] = useState("");
+  const [displayValue, setDisplayValue] = useState("");
+
+  const handleInputChange = (event) => {
+    const input = event.target.value;
+    const numericValue = input.replace(/\D/g, "");
+    setPhone(numericValue);
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    if (phoneNumber.length === 0) return "";
+    if (phoneNumber.length <= 10) {
+      return phoneNumber.replace(
+        /^(\d{0,2})(\d{0,4})(\d{0,4})$/,
+        (match, p1, p2, p3) => {
+          return `(${p1}${p1.length === 2 && p2 ? ") " : ""}${p2}${
+            p2.length === 4 && p3 ? "-" : ""
+          }${p3}`;
+        }
+      );
+    } else {
+      return phoneNumber.replace(
+        /^(\d{0,2})(\d{0,5})(\d{0,4})$/,
+        (match, p1, p2, p3) => {
+          return `(${p1}${p1.length === 2 && p2 ? ") " : ""}${p2}${
+            p2.length === 5 && p3 ? "-" : ""
+          }${p3}`;
+        }
+      );
+    }
+  };
+
+  const handleForwardedInputChange = (e) => {
+    let inputValue = e.target.value.replace(/\D/g, "");
+
+    if (inputValue.length > 8) {
+      inputValue = inputValue.slice(0, 8);
+    }
+
+    let maskedValue = inputValue;
+    if (inputValue.length >= 5) {
+      maskedValue = `${inputValue.slice(0, 2)}/${inputValue.slice(
+        2,
+        4
+      )}/${inputValue.slice(4, 8)}`;
+    } else if (inputValue.length >= 3) {
+      maskedValue = `${inputValue.slice(0, 2)}/${inputValue.slice(2, 4)}`;
+    } else if (inputValue.length >= 1) {
+      maskedValue = `${inputValue.slice(0, 2)}`;
+    }
+
+    setDisplayValue(maskedValue);
+
+    if (inputValue.length === 8) {
+      const day = inputValue.slice(0, 2);
+      const month = inputValue.slice(2, 4);
+      const year = inputValue.slice(4, 8);
+      const isoFormattedDate = `${year}-${month}-${day}T00:00:00`;
+      setForwardedDate(isoFormattedDate);
+    } else {
+      setForwardedDate("");
+    }
+  };
+
+  const internalRegisterPostCondition =
+    ra &&
+    course &&
+    phone &&
+    subject &&
+    finalSummary &&
+    organ &&
+    forwardedDate &&
+    notes;
+
+  const handlePostInternalRegister = () => {
+    const body = {
+      RA: ra,
+      course,
+      phone,
+      subject,
+      finalSummary,
+      organ,
+      forwardedDate,
+      notes,
+    };
+
+    console.log("corpo", body);
+
+    if (internalRegisterPostCondition) {
+      try {
+        postInternalRegister(body);
+      } catch (error) {
+        console.log("ERROR", error);
+      }
+    }
+  };
 
   return (
     <Container>
@@ -86,32 +194,51 @@ export const Register = () => {
               <InputGroup>
                 <InputArea>
                   <InputTitle>Requerente</InputTitle>
-                  <FormInput />
-                </InputArea>
-                <InputArea>
-                  <InputTitle>Requerente</InputTitle>
-                  <FormInput />
+                  <FormInput
+                    onChange={({ target }) => {
+                      setRa(target.value);
+                    }}
+                  />
                 </InputArea>
               </InputGroup>
               <InputGroup>
                 <InputArea>
                   <InputTitle>Curso</InputTitle>
-                  <FormInput />
+                  <FormInput
+                    onChange={({ target }) => {
+                      setCourse(target.value);
+                    }}
+                  />
                 </InputArea>
               </InputGroup>
               <InputGroup gap={"19%"}>
                 <InputArea>
                   <InputTitle>Fone</InputTitle>
-                  <FormInput />
+                  <FormInput
+                    type="text"
+                    value={formatPhoneNumber(phone)}
+                    onChange={handleInputChange}
+                    maxLength={15}
+                  />
                 </InputArea>
                 <InputArea>
                   <InputTitle>Assunto</InputTitle>
-                  <FormInput width={"600px"} />
+                  <FormInput
+                    width={"600px"}
+                    onChange={({ target }) => {
+                      setSubject(target.value);
+                    }}
+                  />
                 </InputArea>
               </InputGroup>
               <InputArea>
                 <InputTitle>Resumo final</InputTitle>
-                <FormInput /* height={'200px'} */ width={"700px"} />
+                <FormInput
+                  width={"700px"}
+                  onChange={({ target }) => {
+                    setFinalSummary(target.value);
+                  }}
+                />
               </InputArea>
               <AreaTitle>
                 <Title>Tramitação</Title>
@@ -119,16 +246,29 @@ export const Register = () => {
               <InputGroup gap={"19%"}>
                 <InputArea>
                   <InputTitle>Orgão</InputTitle>
-                  <FormInput />
+                  <FormInput
+                    onChange={({ target }) => {
+                      setOrgan(target.value);
+                    }}
+                  />
                 </InputArea>
                 <InputGroup gap={"10px"}>
                   <InputArea>
                     <InputTitle>Encaminhado</InputTitle>
-                    <FormInput />
+                    <FormInput
+                      value={displayValue}
+                      onChange={(value) => {
+                        handleForwardedInputChange(value);
+                      }}
+                    />
                   </InputArea>
                   <InputArea>
                     <InputTitle>Anotações</InputTitle>
-                    <FormInput /* height={'100px'} */ />
+                    <FormInput
+                      onChange={({ target }) => {
+                        setNotes(target.value);
+                      }}
+                    />
                   </InputArea>
                 </InputGroup>
               </InputGroup>
@@ -137,7 +277,10 @@ export const Register = () => {
                   <GoArrowLeft size={30} color="#000000" />
                 </Touch>
                 <ButtonGroup>
-                  <FormButton color="#690013">
+                  <FormButton
+                    onClick={() => handlePostInternalRegister()}
+                    color="#690013"
+                  >
                     <FormButtonText>Enviar</FormButtonText>
                   </FormButton>
                   <FormButton color="#8B642A">
@@ -185,7 +328,7 @@ export const Register = () => {
               </InputGroup>
               <InputArea>
                 <InputTitle>Assunto</InputTitle>
-                <FormInput /* height={'200px'} */ width={"700px"} />
+                <FormInput width={"700px"} />
               </InputArea>
               <AreaTitle>
                 <Title>Tramitação</Title>

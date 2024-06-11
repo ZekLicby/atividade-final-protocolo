@@ -25,26 +25,18 @@ import {
   ConfirmationMesssager,
   ConfirmationText,
 } from "./styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../../components/navBar";
 import Header from "../../components/header";
 import { Touch } from "../../styles/globalStyles";
 import { GoArrowLeft } from "react-icons/go";
 import { registerEmployee } from "services/API/protocol/employee";
+import { useFetch } from "hooks/useFetch";
+import { protocolApi } from "services/API";
 
 export const MyProfile = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [confirm, setConfirm] = useState(false);
-
-  /* {
-   "name": "Carlos Lins",
-   "role": "Funcionário protocolo",
-   "email": "carloslins@gmail.com",
-   "departament": "Protocolo",
-   "birthdate": "2002-12-22T12:00:00",
-   "registrationNumber": "77777",
-   "passwordHash": "123"
-} */
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -80,7 +72,7 @@ export const MyProfile = () => {
       const day = inputValue.slice(0, 2);
       const month = inputValue.slice(2, 4);
       const year = inputValue.slice(4, 8);
-      const isoFormattedDate = `${year}-${month}-${day}T12:00:00`;
+      const isoFormattedDate = `${year}-${month}-${day}T00:00:00`;
       setBirthdate(isoFormattedDate);
     } else {
       setBirthdate("");
@@ -97,7 +89,8 @@ export const MyProfile = () => {
     passwordHash: password,
   };
 
-  console.log(birthdate);
+  const url = "/employee";
+  const { data, isLoading } = useFetch(url, {}, true, protocolApi);
 
   return isRegister ? (
     <Container>

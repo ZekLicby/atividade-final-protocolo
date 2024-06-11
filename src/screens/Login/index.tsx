@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ContainerLogin,
   LoginBox,
@@ -15,31 +15,25 @@ import { GoPerson } from "react-icons/go";
 import { GoLock } from "react-icons/go";
 import Link from "next/link";
 import { handleLogin } from "../../services/API/protocol/employee";
-import { useFetch } from "../../hooks/useFetch";
-import { protocolApi } from "../../services/API";
+import { useRouter } from "next/navigation";
 
 export const Login = () => {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [x, setX] = useState(false);
-
-  const condition = username.length && password.length && x;
 
   const login = () => {
-    handleLogin(username, password).then((response) =>
-      localStorage.setItem("token", response.access_token)
-    );
+    try {
+      handleLogin(username, password).then((response) => {
+        localStorage.setItem("token", response.access_token);
+        if (response) {
+          router.push("/home");
+        }
+      });
+    } catch (error) {
+      console.log("ERROR", error);
+    }
   };
-
-  const url = "/employee";
-
-  const { data, isLoading } = useFetch(url, {}, condition, protocolApi);
-
-  console.log("data", data);
-
-  useEffect(() => {
-    setX(isLoading);
-  }, [isLoading]);
 
   return (
     <ContainerLogin>
@@ -72,7 +66,6 @@ export const Login = () => {
           title={"Entrar"}
           press={() => {
             login();
-            setX(!x);
           }}
         />
 
